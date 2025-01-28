@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Hi, {{ current_user.username }}!</h1>
+    <a href="{{ url_for('new_story') }}"><button type="button" class="btn btn-primary btn-lg">
+    New Adventure
+        </button></a>
+    {% for story in stories %}
+         {% include '_story.html' %}
+    {% endfor %}
+    {% if prev_url %}
+        <a href="{{ prev_url }}">Previous</a>
+    {% endif %}
+    {% if next_url %}
+        <a href="{{ next_url }}">Next</a>
+    {% endif %}
+{% endblock %}

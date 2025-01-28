@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% import "bootstrap_wtf.html" as wtf %}
+
+{# Override flash messages block to be empty #}
+{% block flash_messages %}{% endblock %}
+
+{% block content %}
+    <style>
+        .loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+        }
+        .loader.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .loader-text {
+            color: #666;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .chapter {
+            scroll-margin-top: 20px;
+        }
+        .flash-messages {
+            margin: 20px 0;
+        }
+        .flash-message {
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .flash-message.error {
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #dc2626;
+        }
+        .flash-message.success {
+            background-color: #dcfce7;
+            border: 1px solid #22c55e;
+            color: #16a34a;
+        }
+    </style>
+
+    <div class="loader">
+        <div class="spinner"></div>
+        <p class="loader-text">Generating your chapter... Please wait</p>
+    </div>
+
+    <table>
+        {% include '_story.html' %}
+    </table>
+
+    {% for chapter in chapters %}
+        <div id="chapter-{{ chapter.chapter_number }}" class="chapter">
+            {% include '_chapter.html' %}
+        </div>
+    {% endfor %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% if not next_url %}
+        <form id="chapterForm" action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.prompt.label }}<br>
+                {{ form.prompt }}<br>
+                {% for error in form.prompt.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.api_key.label }}<br>
+                {{ form.api_key }}<br>
+                {% for error in form.prompt.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+
+        <script>
+            function scrollToLastChapter() {
+                const chapters = document.querySelectorAll('.chapter');
+                if (chapters.length > 0) {
+                    const lastChapter = chapters[chapters.length - 1];
+                    lastChapter.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+
+            window.addEventListener('load', function() {
+                scrollToLastChapter();
+
+                // Restore API key from session storage if it exists
+                const savedApiKey = sessionStorage.getItem('openaiApiKey');
+                if (savedApiKey) {
+                    document.getElementById('api_key').value = savedApiKey;
+                }
+            });
+
+            document.getElementById('chapterForm').addEventListener('submit', function(e) {
+                // Save API key to session storage before form submission
+                const apiKeyInput = document.getElementById('api_key');
+                if (apiKeyInput.value) {
+                    sessionStorage.setItem('openaiApiKey', apiKeyInput.value);
+                }
+
+                document.querySelector('.loader').classList.add('active');
+                document.querySelector('input[type="submit"]').disabled = true;
+            });
+        </script>
+    {% endif %}
+{% endblock %}
