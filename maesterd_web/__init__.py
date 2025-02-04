@@ -6,12 +6,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import logging
 from flask_login import LoginManager
+from flask_moment import Moment
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_pyfile('config.py', silent=True)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
+moment = Moment(app)
 login.login_view = 'login'
 
 from maesterd_web import routes, models, errors
@@ -47,6 +49,6 @@ if not app.debug:
 #     # maesterd_web.register_blueprint(blog.bp)
 #     # maesterd_web.add_url_rule('/', endpoint='index')
 #     #
-#     # maesterd_web.register_blueprint(auth.bp)
+#     # maesterd_web.register_blueprint(user.bp)
 #
 #     return app

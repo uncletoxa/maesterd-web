@@ -7,7 +7,7 @@
 #
 # # from maesterd_web. import get_db
 #
-# bp = Blueprint('auth', __name__, url_prefix='/auth')
+# bp = Blueprint('user', __name__, url_prefix='/user')
 #
 #
 # @bp.route('/register', methods=('GET', 'POST'))
@@ -33,11 +33,11 @@
 #             except db.IntegrityError:
 #                 error = f"User {username} is already registered."
 #             else:
-#                 return redirect(url_for("auth.login"))
+#                 return redirect(url_for("user.login"))
 #
 #         flash(error)
 #
-#     return render_template('auth/register.html')
+#     return render_template('user/register.html')
 #
 #
 # @bp.route('/login', methods=('GET', 'POST'))
@@ -61,7 +61,7 @@
 #
 #         flash(error)
 #
-#     return render_template('auth/login.html')
+#     return render_template('user/login.html')
 #
 #
 # @bp.route('/logout')
@@ -84,7 +84,7 @@
 #     @functools.wraps(view)
 #     def wrapped_view(**kwargs):
 #         if g.user is None:
-#             return redirect(url_for('auth.login'))
+#             return redirect(url_for('user.login'))
 #
 #         return view(**kwargs)
 #

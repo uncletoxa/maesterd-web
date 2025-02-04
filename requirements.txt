@@ -6,3 +6,4 @@ flask-wtf==1.2.2
 environs==14.1.0
 roman==5.0.0
 openai==1.60.1
+flask-moment==1.0.6
