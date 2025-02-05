@@ -1,15 +1,10 @@
-from hashlib import md5
 from datetime import datetime, timezone
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-from maesterd_web import app, db, migrate, login
+from maesterd_web.extensions import db
 from maesterd_web.settings import MAX_TITLE_LENGTH
-from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
 from roman import toRoman
-
-
-
+from maesterd_web.user.models import User
 
 
 class Story(db.Model):
@@ -40,10 +35,3 @@ class Chapter(db.Model):
 
     def __repr__(self):
         return f'<Chapter {toRoman(self.chapter_number)}>'
-
-
-class UserKey(db.Model):
-    user_key_id: so.Mapped[int] = so.mapped_column(sa.BigInteger().with_variant(db.Integer, "sqlite"), primary_key=True)
-    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.user_id), index=True)
-
-    user_key_owner_id: so.Mapped['User'] = so.relationship(back_populates='user_key')

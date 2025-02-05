@@ -2,11 +2,11 @@
 
 {% block content %}
     <h1>Hi, {{ current_user.username }}!</h1>
-    <a href="{{ url_for('new_story') }}"><button type="button" class="btn btn-primary btn-lg">
+    <a href="{{ url_for('story.new') }}"><button type="button" class="btn btn-primary btn-lg">
     New Adventure
         </button></a>
     {% for story in stories %}
-         {% include '_story.html' %}
+         {% include 'story/_story.html' %}
     {% endfor %}
     <nav aria-label="Post navigation">
         <ul class="pagination">

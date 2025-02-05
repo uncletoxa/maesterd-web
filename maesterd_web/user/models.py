@@ -6,8 +6,7 @@ from datetime import datetime, timezone
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from maesterd_web import db, login
-from maesterd_web.models import Story, UserKey
+from maesterd_web.extensions import db
 
 
 class User(UserMixin, db.Model):
@@ -37,6 +36,9 @@ class User(UserMixin, db.Model):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return f'https://www.gravatar.com/avatar/{digest}?d=monsterid&s={size}'
 
-@login.user_loader
-def load_user(user_id):
-    return db.session.get(User, int(user_id))
+
+class UserKey(db.Model):
+    user_key_id: so.Mapped[int] = so.mapped_column(sa.BigInteger().with_variant(db.Integer, "sqlite"), primary_key=True)
+    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.user_id), index=True)
+
+    user_key_owner_id: so.Mapped['User'] = so.relationship(back_populates='user_key')

@@ -68,12 +68,12 @@
     </div>
 
     <table>
-        {% include '_story.html' %}
+        {% include 'story/_story.html' %}
     </table>
 
     {% for chapter in chapters %}
         <div id="chapter-{{ chapter.chapter_number }}" class="chapter">
-            {% include '_chapter.html' %}
+            {% include 'story/_chapter.html' %}
         </div>
     {% endfor %}
 

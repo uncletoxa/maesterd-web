@@ -9,7 +9,7 @@
     </table>
     <hr>
     {% for story in stories %}
-         {% include '_story.html' %}
+         {% include 'story/_story.html' %}
     {% endfor %}
     {% if prev_url %}
         <a href="{{ prev_url }}">Previous</a>
