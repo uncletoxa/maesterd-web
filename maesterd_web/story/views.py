@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from maesterd_web.extensions import db
 from maesterd_web.story.models import Story, Chapter
 from maesterd_web.story.forms import StoryForm, ChapterForm
-from maesterd_web.utils import make_openai_request
+from maesterd_web.utils.requests import make_request
 
 
 blueprint = Blueprint("story", __name__, url_prefix="/story", static_folder="static")
@@ -30,7 +30,7 @@ def story(story_id):
 
             # Try to make the OpenAI request
             try:
-                chapter.response = make_openai_request(chapter.prompt, form.api_key.data)
+                chapter.response = make_request(chapter.prompt, form.api_key.data)
             except Exception as e:
                 flash('An unexpected error occurred. Please try again.', 'error')
                 return redirect(url_for('story', story_id=story_id))
@@ -43,7 +43,7 @@ def story(story_id):
             db.session.rollback()
             flash('Database error occurred. Please try again.', 'error')
 
-        return redirect(url_for('story', story_id=story_id))
+        return redirect(url_for('story.story', story_id=story_id))
 
     return render_template('story/story.html', chapters=chapters, story=story, form=form)
 
@@ -57,5 +57,5 @@ def new():
         db.session.add(story)
         db.session.commit()
         flash('Your story is now live!')
-        return redirect(url_for('story', story_id=story.story_id))
+        return redirect(url_for('story.new', story_id=story.story_id))
     return render_template('story/new.html', title='New Story', form=form)

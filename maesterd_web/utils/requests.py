@@ -1,30 +1,27 @@
-from openai import OpenAI, OpenAIError
-import requests.exceptions
+import socket
+import json
 
 
-def make_openai_request(prompt, api_key):
-    # return 'that is the fake api response'
+class SocketRequestError(Exception):
+    pass
+
+
+def make_request(prompt, api_key):
     try:
-        client = OpenAI(api_key=api_key)
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",  # Updated to a valid model name
-            messages=[
-                {"role": "system", "content": "You are a dungeons and dragons role play game master"},
-                {"role": "user", "content": prompt}
-            ],
-            timeout=30  # Add a timeout to prevent hanging
-        )
-        return completion.choices[0].message.content
-    except requests.exceptions.Timeout:
-        raise requests.exceptions.RequestException("Request timed out. Please try again.")
-    except requests.exceptions.ConnectionError:
-        raise requests.exceptions.RequestException("Connection error. Please check your internet connection")
-    except OpenAIError as openai_error:
-        if "invalid_api_key" in str(openai_error).lower():
-            raise RuntimeError('Invalid OpenAI API key. Please check your API key and try again')
-        elif "rate_limit" in str(openai_error).lower():
-            raise RuntimeError('Rate limit exceeded. Please wait a moment before trying again')
-        else:
-            raise RuntimeError('OpenAI API error: ' + str(openai_error))
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
+            sock.connect("/tmp/sockets/openai_service.sock")
+
+            request_data = {"prompt": ':::,' + prompt, "api_key": api_key}
+            sock.send(json.dumps(request_data).encode())
+
+            response = sock.recv(4096).decode()  #  4 KiB buffer size
+            response_data = json.loads(response)
+
+            if response_data.get("error"):
+                raise SocketRequestError(response_data["error"])
+            return response_data["content"]
+
+    except ConnectionRefusedError:
+        raise SocketRequestError("OpenAI service is not running")
     except Exception as e:
-        raise Exception(f"Unexpected error in OpenAI request: {str(e)}")
+        raise SocketRequestError(f"Socket communication error: {str(e)}") from e
