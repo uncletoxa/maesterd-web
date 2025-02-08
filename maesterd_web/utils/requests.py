@@ -1,6 +1,8 @@
 import socket
 import json
 
+from maesterd_web.settings import OPENAI_SOCKET_ADDR
+
 
 class SocketRequestError(Exception):
     pass
@@ -9,12 +11,12 @@ class SocketRequestError(Exception):
 def make_request(prompt, api_key):
     try:
         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
-            sock.connect("/tmp/sockets/openai_service.sock")
+            sock.connect(OPENAI_SOCKET_ADDR)
 
-            request_data = {"prompt": ':::,' + prompt, "api_key": api_key}
+            request_data = {"prompt": prompt, "api_key": api_key}
             sock.send(json.dumps(request_data).encode())
 
-            response = sock.recv(4096).decode()  #  4 KiB buffer size
+            response = sock.recv(4096).decode()   # 4 KiB buffer size
             response_data = json.loads(response)
 
             if response_data.get("error"):

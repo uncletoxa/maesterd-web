@@ -50,7 +50,7 @@ def start_server():
         conn, _ = server.accept()
         try:
             with conn:
-                data = conn.recv(1024).decode()
+                data = conn.recv(4096).decode()  # 4 KiB buffer size
                 request = json.loads(data)
                 logging.info(f"Request received: {data}")
 
