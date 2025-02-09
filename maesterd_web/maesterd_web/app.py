@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 
 from flask import Flask, render_template
@@ -9,11 +10,15 @@ from maesterd_web.extensions import db, migrate, login, moment
 def create_app():
     """Create application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/"""
     app = Flask(__name__.split(".")[0], instance_relative_config=True)
-    app.config.from_pyfile('config.py', silent=True)
+    # app.config.from_pyfile('config.py', silent=True)
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
+    app.config['FLASK_APP'] = os.getenv('FLASK_APP')
+    app.config['SECRET_KEY'] = 'uncletoxaeskinmisecretkey'
     register_extensions(app)
     register_blueprints(app)
     register_error_handlers(app)
     return app
+
 
 def register_extensions(app):
     db.init_app(app)
