@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "maesterd_web"}]
 
 [tool.poetry.dependencies]
-python = "3.9.18"
+python = "3.12.8"
 maesterd = { path = "../maesterd", develop = true }
 flask = "^3.1.0"
 flask-sqlalchemy = "^3.1.1"
