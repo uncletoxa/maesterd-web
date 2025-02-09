@@ -1,27 +1,25 @@
 [tool.poetry]
-name = "maesterd"
+name = "maesterd-web"
 version = "0.1.0"
 description = ""
-authors = ["eskinmi <mustafasamedeskin@gmail.com>"]
+authors = ["uncletoxa <https://github.com/uncletoxa>"]
 readme = "README.md"
-packages = [{include = "maesterd"}]
+packages = [{include = "maesterd_web"}]
 
 [tool.poetry.dependencies]
 python = "3.9.18"
-pydantic = "^2.10.3"
-langchain = "^0.3.12"
-langchain-openai = "^0.2.12"
-langgraph = "^0.2.60"
+maesterd = { path = "../maesterd", develop = true }
+flask = "^3.1.0"
+flask-sqlalchemy = "^3.1.1"
+flask-login = "^0.6.3"
+flask-migrate = "^4.1.0"
+flask-wtf = "^1.2.2"
+environs = "^14.1.0"
+roman = "^5.0"
+flask-moment = "^1.0.6"
 
 [tool.poetry.group.dev.dependencies]
-mock = "^5.0.2"
 pytest = "^7.3.1"
-moto = "^4.1.8"
-pre-commit = "^3.3.1"
-toml = "^0.10.2"
-black = "^22.6.0"
-flake8 = "^6.1.0"
-pytest-cov = "^4.1.0"
 
 [[tool.poetry.source]]
 name = "pypi"
@@ -37,6 +35,3 @@ testpaths = ['tests/']
 [tool.black]
 line-length = 120
 target-version = ['py39']
-
-[tool.poetry.scripts]
-campaign = "maesterd.cli:cli"
