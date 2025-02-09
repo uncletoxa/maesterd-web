@@ -2,24 +2,44 @@ import logging
 import socket
 import os
 import json
-from openai import OpenAI, OpenAIError
+from openai import OpenAIError
 import requests.exceptions
+
+from maesterd.llm.graph import graph
+from maesterd import config
 
 SOCKET_PATH = "/tmp/sockets/openai_service.sock"
 
 
-def handle_openai_request(prompt, api_key):
+def handle_openai_request(stage, prompt: str = '', **kwargs):
     try:
-        client = OpenAI(api_key=api_key)
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a dungeons and dragons role play game master"},
-                {"role": "user", "content": prompt}
-            ],
-            timeout=30
-        )
-        return {"content": completion.choices[0].message.content}
+        # client = OpenAI(api_key=api_key)
+        # completion = client.chat.completions.create(
+        #     model="gpt-4o-mini",
+        #     messages=[
+        #         {"role": "system", "content": "You are a dungeons and dragons role play game master"},
+        #         {"role": "user", "content": prompt}
+        #     ],
+        #     timeout=30
+        # )
+        # return {"content": completion.choices[0].message.content}
+        thread_config = {
+            "configurable": {
+                "thread_id": "user"
+            }
+        }
+        if stage == 'setup':
+            graph.invoke(
+                input={"messages": [], 'num_pc': kwargs.get('num_pc', 1)},
+                config={"recursion_limit": config.recursion_limit},
+                debug=config.debug,
+            )
+        if stage == 'master':
+            graph.update_state({'actor_prompts': prompt}, config=thread_config)  # update with prompt
+            graph.invoke(None, config=thread_config)  # continue
+
+        return {"content": graph.get_state()['messages'][-1]['content']}
+
     except requests.exceptions.Timeout:
         return {"error": "Request timed out. Please try again."}
     except requests.exceptions.ConnectionError:
