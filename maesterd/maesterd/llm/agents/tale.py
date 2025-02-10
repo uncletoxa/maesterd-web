@@ -47,4 +47,10 @@ def node(state: TypedDict) -> Command[Literal["pc"]]:
     )
     message = AIMessage(content=content, name=NAME)
     click.echo(f"\n{content}")
-    return Command(update={"messages": [message]}, goto="pc")
+    return Command(
+        update={
+            "messages": [message],
+            **r,
+        },
+        goto="pc"
+    )
