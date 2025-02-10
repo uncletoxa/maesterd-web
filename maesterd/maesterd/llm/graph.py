@@ -1,8 +1,9 @@
 import operator
-from typing import Annotated
+from typing import Annotated, List, Dict, Any
 
 from langgraph.graph import StateGraph, START
 from langgraph.graph import MessagesState
+from langgraph.checkpoint.memory import MemorySaver
 
 from maesterd.llm.agents import master
 from maesterd.llm.agents import router
@@ -14,6 +15,10 @@ from maesterd.llm.agents import pc
 class State(MessagesState):
     num_pc: int
     actor_prompts: Annotated[list[str], operator.add]
+    pcs: List[Dict[str, Any]]
+    name: str
+    setting: str
+    goal: str
 
 
 builder = StateGraph(State)
@@ -25,4 +30,5 @@ builder.add_node(master.NAME, master.node)
 builder.add_node(router.NAME, router.node)
 builder.add_node(actors.NAME, actors.node)
 
-graph = builder.compile(interrupt_before=[actors.NAME])
+checkpointer = MemorySaver()
+graph = builder.compile(interrupt_before=[actors.NAME], checkpointer=checkpointer)
