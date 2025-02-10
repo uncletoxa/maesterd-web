@@ -55,6 +55,6 @@ def node(state: TypedDict) -> Command[Literal["router"]]:
         messages.append(AIMessage(player_str := pc_to_str(pc), name=NAME))
         click.echo(f"\n{player_str}")
     return Command(
-        update={"messages": messages},
+        update={"messages": messages, "pcs": pcs["pcs"]},
         goto="router",
     )
