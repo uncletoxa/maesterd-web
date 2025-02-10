@@ -1,17 +1,10 @@
 {% extends "base.html" %}
 {% import "bootstrap_wtf.html" as wtf %}
 
-
 {% block content %}
   <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
-    <p>
-      {{ form.title.label }}<br>
-      {{ form.title }}<br>
-      {% for error in form.title.errors %}
-      <span style="color: red;">[{{ error }}]</span>
-      {% endfor %}
-    </p>
+
     <p>
       {{ form.description.label }}<br>
       {{ form.description }}<br>
@@ -19,6 +12,7 @@
       <span style="color: red;">[{{ error }}]</span>
       {% endfor %}
     </p>
+
     <p>{{ form.submit() }}</p>
   </form>
 {% endblock %}
