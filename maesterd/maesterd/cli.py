@@ -97,5 +97,18 @@ def run(conf, num_pc):
     )
 
 
+@cli.command()
+@click.option('--socket-path', default='/tmp/sockets/maesterd.sock', help='Unix socket path')
+def serve(socket_path):
+    """
+    Start the maesterd socket api.
+
+    Example:
+        poetry run campaign serve
+        poetry run campaign serve --socket-path /custom/path/maesterd.sock
+    """
+    from maesterd.api.server import run_server
+    run_server(socket_path)
+
 if __name__ == "__main__":
     cli()
