@@ -10,7 +10,7 @@
     {{ moment.include_moment() }}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top mb-4">
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('public.index') }}">
                 <i class="bi bi-book me-2"></i>Maesterd
@@ -35,9 +35,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <button class="btn nav-link" id="theme-toggle">
-                            <i class="bi bi-moon-fill"></i>
-                        </button>
+                        {% include '_theme_switcher.html' %}
                     </li>
                     {% if current_user.is_anonymous %}
                     <li class="nav-item">
@@ -96,33 +94,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Theme toggler
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = themeToggle.querySelector('i');
-
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-bs-theme', theme);
-            localStorage.setItem('theme', theme);
-            themeIcon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
-        }
-
-        // Set initial theme
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        setTheme(savedTheme);
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-            setTheme(currentTheme === 'dark' ? 'light' : 'dark');
-        });
-
-        // Form submission loading state
-        document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', () => {
-                document.querySelector('.loading-overlay').style.display = 'flex';
-            });
-        });
-    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

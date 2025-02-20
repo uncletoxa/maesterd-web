@@ -1,0 +1,112 @@
+<div class="dropdown">
+    <button class="btn nav-link dropdown-toggle d-flex align-items-center"
+            type="button"
+            id="bd-theme"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+        <i class="bi bi-circle-half theme-icon-active me-1"></i>
+        <span class="d-lg-none ms-2">Toggle theme</span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme">
+        <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light">
+                <i class="bi bi-sun-fill me-2"></i>
+                Light
+                <i class="bi bi-check-lg ms-auto d-none"></i>
+            </button>
+        </li>
+        <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                Dark
+                <i class="bi bi-check-lg ms-auto d-none"></i>
+            </button>
+        </li>
+        <li>
+            <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto">
+                <i class="bi bi-circle-half me-2"></i>
+                Auto
+                <i class="bi bi-check-lg ms-auto d-none"></i>
+            </button>
+        </li>
+    </ul>
+</div>
+
+<script>
+/*!
+ * Color mode toggler for Bootstrap's docs (https://getbootstrap.com/)
+ * Copyright 2011-2024 The Bootstrap Authors
+ * Licensed under the Creative Commons Attribution 3.0 Unported License.
+ */
+
+(() => {
+    'use strict'
+
+    const getStoredTheme = () => localStorage.getItem('theme')
+    const setStoredTheme = theme => localStorage.setItem('theme', theme)
+
+    const getPreferredTheme = () => {
+        const storedTheme = getStoredTheme()
+        if (storedTheme) {
+            return storedTheme
+        }
+
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+
+    const setTheme = theme => {
+        if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-bs-theme', 'dark')
+        } else {
+            document.documentElement.setAttribute('data-bs-theme', theme)
+        }
+    }
+
+    setTheme(getPreferredTheme())
+
+    const showActiveTheme = (theme, focus = false) => {
+        const themeSwitcher = document.querySelector('#bd-theme')
+        if (!themeSwitcher) {
+            return
+        }
+
+        const themeSwitcherText = document.querySelector('#bd-theme-text')
+        const activeThemeIcon = document.querySelector('.theme-icon-active')
+        const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+        const iconOfActiveBtn = btnToActive.querySelector('i.bi').className
+
+        document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+            element.classList.remove('active')
+            element.querySelector('.bi-check-lg').classList.add('d-none')
+        })
+
+        btnToActive.classList.add('active')
+        btnToActive.querySelector('.bi-check-lg').classList.remove('d-none')
+        activeThemeIcon.className = iconOfActiveBtn
+
+        if (focus) {
+            themeSwitcher.focus()
+        }
+    }
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        const storedTheme = getStoredTheme()
+        if (storedTheme !== 'light' && storedTheme !== 'dark') {
+            setTheme(getPreferredTheme())
+        }
+    })
+
+    document.querySelectorAll('[data-bs-theme-value]')
+        .forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const theme = toggle.getAttribute('data-bs-theme-value')
+                setStoredTheme(theme)
+                setTheme(theme)
+                showActiveTheme(theme, true)
+            })
+        })
+
+    // Show active theme on page load
+    showActiveTheme(getPreferredTheme())
+})()
+</script>
