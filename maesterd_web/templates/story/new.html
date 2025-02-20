@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title h3 mb-4">
+                    <i class="bi bi-plus-circle me-2"></i>Create New Adventure
+                </h1>
+                
+                <div class="alert alert-info mb-4">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Describe your adventure's setting and goals. Be as detailed as you'd like - this will help create a more immersive story!
+                </div>
+
+                <form method="post" class="needs-validation" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-4">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows=6, 
+                            placeholder="Example: I want to embark on an epic fantasy adventure where I'm a young wizard discovering ancient magical artifacts...") }}
+                        {% for error in form.description.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                        <div class="form-text">
+                            Your description will set the tone and direction of your adventure. Include any specific elements or themes you'd like to explore.
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('public.index') }}" class="btn btn-outline-secondary me-md-2">
+                            Cancel
+                        </a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="card mt-4 bg-light border-0">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-lightbulb me-2"></i>Tips for a Great Adventure
+                </h5>
+                <div class="row g-4 mt-2">
+                    <div class="col-md-6">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-pencil-square text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Be Descriptive</h6>
+                                <p class="mb-0 small text-secondary">The more details you provide, the richer your story will be.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-gear text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Set Goals</h6>
+                                <p class="mb-0 small text-secondary">Having clear objectives helps shape your adventure's direction.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

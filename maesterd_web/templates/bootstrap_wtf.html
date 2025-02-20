@@ -1,0 +1,112 @@
+<!-- templates/bootstrap_wtf.html -->
+{# Renders field errors #}
+{% macro render_errors(errors) %}
+    {% if errors %}
+        {% for error in errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+
+{# Renders the field label #}
+{% macro render_label(field) %}
+    {% if field.type != 'BooleanField' %}
+        {{ field.label(class="form-label") }}
+    {% endif %}
+{% endmacro %}
+
+{# Renders input group icons if specified #}
+{% macro render_input_group_icon(icon) %}
+    {% if icon %}
+        <span class="input-group-text">
+            <i class="bi bi-{{ icon }}"></i>
+        </span>
+    {% endif %}
+{% endmacro %}
+
+{# Main field rendering macro #}
+{% macro render_field(field, icon=None, placeholder=None, rows=None) %}
+    {% if field.type == 'BooleanField' %}
+        <div class="form-check mb-3">
+            {{ field(class="form-check-input" + (" is-invalid" if field.errors else "")) }}
+            {{ field.label(class="form-check-label") }}
+            {{ render_errors(field.errors) }}
+        </div>
+
+    {% elif field.type == 'RadioField' %}
+        {{ render_label(field) }}
+        {% for choice in field %}
+            <div class="form-check{% if loop.last %} mb-3{% endif %}">
+                {{ choice(class="form-check-input" + (" is-invalid" if field.errors else "")) }}
+                {{ choice.label(class="form-check-label") }}
+            </div>
+        {% endfor %}
+        {{ render_errors(field.errors) }}
+
+    {% elif field.type == 'SelectField' %}
+        {{ render_label(field) }}
+        {{ field(class="form-select" + (" is-invalid" if field.errors else ""), **kwargs) }}
+        {{ render_errors(field.errors) }}
+
+    {% elif field.type == 'SubmitField' %}
+        {{ field(class="btn btn-primary") }}
+
+    {% else %}
+        <div class="mb-3">
+            {{ render_label(field) }}
+            {% if icon %}
+                <div class="input-group">
+                    {{ render_input_group_icon(icon) }}
+                    {{ field(class="form-control" + (" is-invalid" if field.errors else ""),
+                            placeholder=placeholder,
+                            rows=rows) }}
+                </div>
+            {% else %}
+                {{ field(class="form-control" + (" is-invalid" if field.errors else ""),
+                        placeholder=placeholder,
+                        rows=rows) }}
+            {% endif %}
+            {{ render_errors(field.errors) }}
+        </div>
+    {% endif %}
+{% endmacro %}
+
+{# Quick form rendering macro #}
+{% macro quick_form(form, action="", method="post", class="", icons={}) %}
+<form action="{{ action }}"
+      method="{{ method }}"
+      class="{{ class }}"
+      {% if form.multipart %}enctype="multipart/form-data"{% endif %}
+      novalidate>
+
+    {{ form.hidden_tag() }}
+
+    {# Show errors for hidden fields #}
+    {% for field, errors in form.errors.items() %}
+        {% if form[field].widget.input_type == 'hidden' %}
+            {% for error in errors %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+    {# Render visible fields #}
+    {% for field in form %}
+        {% if field.widget.input_type != 'hidden' %}
+            {{ render_field(field,
+                          icon=icons.get(field.name),
+                          placeholder=field.description,
+                          rows=4 if field.type == 'TextAreaField' else None) }}
+        {% endif %}
+    {% endfor %}
+</form>
+{% endmacro %}
+
+{# Example usage:
+{{ quick_form(form,
+             icons={
+                 'username': 'person',
+                 'email': 'envelope',
+                 'password': 'lock'
+             }) }}
+#}

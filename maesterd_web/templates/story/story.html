@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Story Header -->
+        <div class="card story-header mb-5">
+            <div class="card-body">
+                <h1 class="display-6 mb-4">{{ story.title }}</h1>
+
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <div class="setting-section">
+                            <h6 class="text-primary mb-2">
+                                <i class="bi bi-compass me-2"></i>Setting
+                            </h6>
+                            <p class="mb-0">{{ story.setting }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="goal-section">
+                            <h6 class="text-primary mb-2">
+                                <i class="bi bi-flag me-2"></i>Goal
+                            </h6>
+                            <p class="mb-0">{{ story.goal }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {% if story.description %}
+                <div class="mb-4">
+                    <h6 class="text-primary mb-2">
+                        <i class="bi bi-book me-2"></i>Description
+                    </h6>
+                    <p class="mb-0">{{ story.description }}</p>
+                </div>
+                {% endif %}
+
+                <div class="text-secondary small">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-clock me-2"></i>
+                        Started {{ moment(story.created_at).fromNow() }}
+                        <span class="mx-2">•</span>
+                        <i class="bi bi-person me-2"></i>
+                        {{ story.story_author_id.username }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chapters -->
+        <div class="chapters-section">
+            {% for chapter in chapters %}
+                {% include 'story/_chapter.html' %}
+            {% endfor %}
+        </div>
+
+        <!-- New Chapter Form -->
+        {% if not next_url %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-4">
+                    <i class="bi bi-plus-circle me-2"></i>What happens next?
+                </h5>
+
+                <form id="chapterForm" method="post" class="needs-validation" novalidate>
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-4">
+                        {{ form.prompt.label(class="form-label") }}
+                        {{ form.prompt(class="form-control", rows=4, placeholder="Describe your next action...") }}
+                        {% for error in form.prompt.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form.api_key.label(class="form-label") }}
+                        <div class="input-group">
+                            {{ form.api_key(class="form-control", type="password", placeholder="Enter your OpenAI API key") }}
+                            <button class="btn btn-outline-secondary" type="button" id="toggleApiKey">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        {% for error in form.api_key.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                        <div class="form-text">Your API key is stored securely and used only for this request.</div>
+                    </div>
+
+                    {{ form.submit(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Toggle API key visibility
+    const toggleApiKey = document.getElementById('toggleApiKey');
+    const apiKeyInput = document.getElementById('api_key');
+
+    if (toggleApiKey && apiKeyInput) {
+        toggleApiKey.addEventListener('click', () => {
+            const type = apiKeyInput.type === 'password' ? 'text' : 'password';
+            apiKeyInput.type = type;
+            toggleApiKey.innerHTML = `<i class="bi bi-eye${type === 'password' ? '' : '-slash'}"></i>`;
+        });
+    }
+
+    // Handle API key storage
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedApiKey = sessionStorage.getItem('openaiApiKey');
+        if (savedApiKey && apiKeyInput) {
+            apiKeyInput.value = savedApiKey;
+        }
+    });
+
+    const chapterForm = document.getElementById('chapterForm');
+    if (chapterForm) {
+        chapterForm.addEventListener('submit', () => {
+            if (apiKeyInput.value) {
+                sessionStorage.setItem('openaiApiKey', apiKeyInput.value);
+            }
+        });
+    }
+</script>
+{% endblock %}

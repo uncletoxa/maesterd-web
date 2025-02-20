@@ -1,0 +1,106 @@
+<!-- templates/public/index.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">Welcome, {{ current_user.username }}!</h1>
+            <a href="{{ url_for('story.new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>New Adventure
+            </a>
+        </div>
+
+        {% if stories %}
+            <div class="stories-grid">
+                {% for story in stories %}
+                    {% include 'story/_story.html' %}
+                {% endfor %}
+            </div>
+
+            <nav aria-label="Story navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item {% if not prev_url %}disabled{% endif %}">
+                        <a class="page-link" href="{{ prev_url if prev_url else '#' }}">
+                            <i class="bi bi-chevron-left me-1"></i>Newer Stories
+                        </a>
+                    </li>
+                    <li class="page-item {% if not next_url %}disabled{% endif %}">
+                        <a class="page-link" href="{{ next_url if next_url else '#' }}">
+                            Older Stories<i class="bi bi-chevron-right ms-1"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <div class="display-6 text-secondary mb-4">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+                    <h2 class="h4 mb-3">No Adventures Yet</h2>
+                    <p class="text-secondary mb-4">
+                        Start your first adventure and begin creating an epic story!
+                    </p>
+                    <a href="{{ url_for('story.new') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Create First Adventure
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{{ current_user.avatar(64) }}" class="rounded-circle me-3" width="64" height="64">
+                    <div>
+                        <h5 class="card-title mb-1">{{ current_user.username }}</h5>
+                        <p class="text-secondary small mb-0">
+                            Member since {{ moment(current_user.created_at).format('LL') }}
+                        </p>
+                    </div>
+                </div>
+                <hr>
+                <div class="story-stats">
+                    <div class="d-flex justify-content-around text-center">
+                        <div>
+                            <h6 class="mb-1">{{ stories|length }}</h6>
+                            <small class="text-secondary">Stories</small>
+                        </div>
+                        <div class="border-start border-end px-3">
+                            <h6 class="mb-1">
+                                {{ moment(current_user.created_at).fromNow(True) }}
+                            </h6>
+                            <small class="text-secondary">Member For</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="bi bi-lightbulb me-2"></i>Quick Tips
+                </h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-3">
+                        <i class="bi bi-pencil text-primary me-2"></i>
+                        Be descriptive in your story prompts
+                    </li>
+                    <li class="mb-3">
+                        <i class="bi bi-stars text-primary me-2"></i>
+                        Let your imagination run wild
+                    </li>
+                    <li>
+                        <i class="bi bi-arrow-repeat text-primary me-2"></i>
+                        Regular updates keep stories engaging
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

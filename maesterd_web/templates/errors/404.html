@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center text-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body py-5">
+                <div class="display-1 text-primary mb-4">
+                    <i class="bi bi-question-circle"></i>
+                </div>
+                <h1 class="h2 mb-4">Page Not Found</h1>
+                <p class="text-secondary mb-4">
+                    The page you're looking for doesn't exist or has been moved. 
+                    Let's get you back on track!
+                </p>
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                    <a href="{{ url_for('public.index') }}" class="btn btn-primary">
+                        <i class="bi bi-house me-2"></i>Go Home
+                    </a>
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('story.new') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Start New Adventure
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 text-secondary">
+            <small>Error Code: 404</small>
+        </div>
+    </div>
+</div>
+{% endblock %}

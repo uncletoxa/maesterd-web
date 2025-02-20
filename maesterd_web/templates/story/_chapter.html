@@ -1,0 +1,37 @@
+<div class="card chapter-card mb-4">
+    <div class="card-body">
+        <div class="mb-4">
+            <div class="d-flex align-items-center mb-3">
+                <div class="chapter-number me-3">
+                    {{ chapter.chapter_number }}
+                </div>
+                <h5 class="card-title mb-0">Chapter {{ chapter.chapter_number }}</h5>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="text-primary mb-2">
+                    <i class="bi bi-chat-left-quote me-2"></i>Your Action
+                </h6>
+                <div class="prompt-content">
+                    {{ chapter.prompt }}
+                </div>
+            </div>
+
+            <div>
+                <h6 class="text-primary mb-2">
+                    <i class="bi bi-reply me-2"></i>Response
+                </h6>
+                <div class="response-content">
+                    {{ chapter.response }}
+                </div>
+            </div>
+        </div>
+
+        <div class="border-top pt-3">
+            <div class="d-flex align-items-center text-secondary small">
+                <i class="bi bi-clock me-2"></i>
+                <span>{{ moment(chapter.created_at).fromNow() }}</span>
+            </div>
+        </div>
+    </div>
+</div>

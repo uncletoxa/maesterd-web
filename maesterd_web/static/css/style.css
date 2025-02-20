@@ -1,0 +1,153 @@
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #f5f6fa;
+    --text-primary: #2d3436;
+    --text-secondary: #636e72;
+}
+
+/* Base styles */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    background-color: var(--secondary-color);
+}
+
+/* Navigation */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Cards */
+.story-card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.story-card:hover {
+    transform: translateY(-2px);
+}
+
+.chapter-card {
+    border: none;
+    border-left: 4px solid var(--primary-color);
+    transition: transform 0.2s ease;
+}
+
+.chapter-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Story elements */
+.story-header {
+    border-top: 4px solid var(--primary-color);
+}
+
+.setting-section, .goal-section {
+    background-color: rgba(74, 144, 226, 0.1);
+    padding: 1.5rem;
+    border-radius: 8px;
+    height: 100%;
+}
+
+.prompt-content {
+    background-color: rgba(74, 144, 226, 0.1);
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.response-content {
+    line-height: 1.6;
+    font-size: 1.1em;
+}
+
+.chapter-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Forms */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #dfe6e9;
+    padding: 0.75rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+}
+
+.btn-primary:hover {
+    background-color: #357abd;
+}
+
+/* Loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Dark mode styles */
+[data-bs-theme="dark"] {
+    --primary-color: #60a5fa;
+    --secondary-color: #1a1a1a;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+}
+
+[data-bs-theme="dark"] .navbar {
+    background-color: #1a1a1a;
+}
+
+[data-bs-theme="dark"] .story-card {
+    background-color: #2d3748;
+}
+
+[data-bs-theme="dark"] .setting-section,
+[data-bs-theme="dark"] .goal-section,
+[data-bs-theme="dark"] .prompt-content {
+    background-color: rgba(96, 165, 250, 0.1);
+}

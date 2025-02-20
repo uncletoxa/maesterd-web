@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <!-- User Profile Section -->
+    <div class="col-lg-4 mb-4 mb-lg-0">
+        <div class="card">
+            <div class="card-body text-center p-4">
+                <img src="{{ user.avatar(128) }}" 
+                     alt="{{ user.username }}'s avatar"
+                     class="rounded-circle mb-3 shadow-sm"
+                     width="128" height="128">
+                
+                <h2 class="h4 mb-2">{{ user.username }}</h2>
+                <p class="text-secondary mb-3">
+                    <i class="bi bi-calendar3 me-2"></i>
+                    Joined {{ moment(user.created_at).format('LL') }}
+                </p>
+
+                <hr class="my-4">
+
+                <!-- User Stats -->
+                <div class="row g-3 text-center">
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded-3">
+                            <h3 class="h5 mb-1">{{ stories|length }}</h3>
+                            <small class="text-secondary">Stories</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded-3">
+                            <h3 class="h5 mb-1">{{ moment(user.created_at).fromNow(True) }}</h3>
+                            <small class="text-secondary">Member For</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if user == current_user %}
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="bi bi-gear me-2"></i>Quick Actions 
+                </h5>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('story.new') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>New Story
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Stories Section -->
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="h4 mb-0">
+                {% if user == current_user %}
+                    My Stories
+                {% else %}
+                    {{ user.username }}'s Stories
+                {% endif %}
+            </h3>
+            
+            {% if stories %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-sort-down me-1"></i>Sort
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="?sort=newest">Newest First</a></li>
+                    <li><a class="dropdown-item" href="?sort=oldest">Oldest First</a></li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if stories %}
+            <div class="stories-grid">
+                {% for story in stories %}
+                    {% include 'story/_story.html' %}
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Stories navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item{% if not prev_url %} disabled{% endif %}">
+                        <a class="page-link" href="{{ prev_url or '#' }}">
+                            <i class="bi bi-chevron-left me-1"></i>Previous
+                        </a>
+                    </li>
+                    <li class="page-item{% if not next_url %} disabled{% endif %}">
+                        <a class="page-link" href="{{ next_url or '#' }}">
+                            Next<i class="bi bi-chevron-right ms-1"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <div class="display-6 text-secondary mb-4">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+                    <h4 class="mb-3">No Stories Yet</h4>
+                    <p class="text-secondary mb-4">
+                        {% if user == current_user %}
+                            Start your first adventure and begin creating stories!
+                        {% else %}
+                            {{ user.username }} hasn't created any stories yet.
+                        {% endif %}
+                    </p>
+                    {% if user == current_user %}
+                        <a href="{{ url_for('story.new') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Create First Story
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
