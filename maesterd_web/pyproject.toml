@@ -1,37 +1,16 @@
-[tool.poetry]
+[project]
 name = "maesterd-web"
-version = "0.1.0"
-description = ""
-authors = ["uncletoxa <https://github.com/uncletoxa>"]
+version = "0.3.0"
 readme = "README.md"
-packages = [{include = "maesterd_web"}]
-
-[tool.poetry.dependencies]
-python = "3.12.8"
-maesterd = { path = "../maesterd", develop = true }
-flask = "^3.1.0"
-flask-sqlalchemy = "^3.1.1"
-flask-login = "^0.6.3"
-flask-migrate = "^4.1.0"
-flask-wtf = "^1.2.2"
-environs = "^14.1.0"
-roman = "^5.0"
-flask-moment = "^1.0.6"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.3.1"
-
-[[tool.poetry.source]]
-name = "pypi"
-priority = "primary"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-testpaths = ['tests/']
-
-[tool.black]
-line-length = 120
-target-version = ['py39']
+requires-python = ">=3.12.8"
+dependencies = [
+    "environs==14.1.0",
+    "flask==3.1.0",
+    "flask-login==0.6.3",
+    "flask-migrate==4.1.0",
+    "flask-moment==1.0.6",
+    "flask-sqlalchemy==3.1.1",
+    "flask-wtf==1.2.2",
+    "openai==1.60.1",
+    "roman==5.0.0",
+]
