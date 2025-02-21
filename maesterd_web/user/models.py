@@ -13,13 +13,12 @@ class User(UserMixin, db.Model):
     user_id: so.Mapped[int] = so.mapped_column(sa.BigInteger().with_variant(db.Integer, "sqlite"), primary_key=True)
     username: so.Mapped[str] = so.mapped_column(sa.String(64),unique=True)
     email: so.Mapped[str] = so.mapped_column(sa.String(120), unique=True)
-    password_hash: so.Mapped[str | None] = so.mapped_column(sa.String(256))
+    password_hash: so.Mapped[str] = so.mapped_column(sa.String(256))
     created_at: so.Mapped[datetime] = so.mapped_column(
         default=lambda: datetime.now(timezone.utc))
 
     stories: so.WriteOnlyMapped['Story'] = so.relationship(back_populates='story_author_id')
     user_key: so.WriteOnlyMapped['UserKey'] = so.relationship(back_populates='user_key_owner_id')
-    api_key = db.Column(db.String(256), nullable=True)  # Store API Key
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -41,5 +40,6 @@ class User(UserMixin, db.Model):
 class UserKey(db.Model):
     user_key_id: so.Mapped[int] = so.mapped_column(sa.BigInteger().with_variant(db.Integer, "sqlite"), primary_key=True)
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.user_id), index=True)
+    api_key = db.Column(db.String(256), nullable=True)  # Store API Key
 
     user_key_owner_id: so.Mapped['User'] = so.relationship(back_populates='user_key')
