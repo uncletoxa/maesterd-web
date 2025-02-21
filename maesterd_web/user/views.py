@@ -1,6 +1,7 @@
 import sqlalchemy as sa
 from flask import Blueprint, render_template, url_for, request
-from flask_login import login_required
+from flask_login import login_required, current_user
+from flask import redirect, flash
 from maesterd_web.extensions import db
 from maesterd_web.story.models import Story
 from maesterd_web.user.models import User
@@ -21,3 +22,19 @@ def user_profile(username):
 
     return render_template('user/profile.html', user=user,
                            stories=stories.items, next_url=next_url, prev_url=prev_url)
+
+
+@blueprint.route('/save_api_key', methods=['POST'])
+@login_required
+def save_api_key():
+    api_key = request.form.get('api_key')
+
+    if not api_key:
+        flash('API key cannot be empty!', 'danger')
+        return redirect(url_for('user.user_profile', username=current_user.username))
+
+    current_user.api_key = api_key
+    db.session.commit()
+
+    flash('API Key saved successfully!', 'success')
+    return redirect(url_for('user.user_profile', username=current_user.username))

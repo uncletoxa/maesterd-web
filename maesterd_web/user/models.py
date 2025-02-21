@@ -19,6 +19,7 @@ class User(UserMixin, db.Model):
 
     stories: so.WriteOnlyMapped['Story'] = so.relationship(back_populates='story_author_id')
     user_key: so.WriteOnlyMapped['UserKey'] = so.relationship(back_populates='user_key_owner_id')
+    api_key = db.Column(db.String(256), nullable=True)  # Store API Key
 
     def __repr__(self):
         return f'<User {self.username}>'

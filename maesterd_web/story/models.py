@@ -35,7 +35,6 @@ class Chapter(db.Model):
     created_at: so.Mapped[datetime] = so.mapped_column(
         default=lambda: datetime.now(timezone.utc))
     story_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Story.story_id), index=True)
-
     part_of_story: so.Mapped['Story'] = so.relationship(back_populates='chapters')
 
     def __repr__(self):

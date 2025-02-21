@@ -43,6 +43,7 @@ def register_error_handlers(app):
         app.errorhandler(errcode)(render_error)
     return None
 
+
 def configure_logger(app):
     handler = logging.StreamHandler(sys.stdout)
     if not app.logger.handlers:
