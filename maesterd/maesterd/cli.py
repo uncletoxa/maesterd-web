@@ -93,7 +93,7 @@ def run(conf, num_pc):
     graph.invoke(
         input={"messages": [], 'num_pc': num_pc},
         config={"recursion_limit": conf.recursion_limit},
-        debug=conf.debug,
+        debug=False,
     )
 
 
@@ -109,6 +109,7 @@ def serve(socket_path):
     """
     from maesterd.api.server import run_server
     run_server(socket_path)
+
 
 if __name__ == "__main__":
     cli()
