@@ -21,18 +21,28 @@ def handle_story_request(request_type: str, form_data: dict, story_id=None):
     """
     try:
 
+        request_data = {
+            "type": request_type,
+            "thread_id": f"user={current_user.user_id}.thread={story_id or uuid4()}",
+            "api_key": current_user.user_key.api_key
+        }
+
         if request_type == "new_story":
-            prompt = form_data['description'],
-
+            request_data.update(
+                {'description': form_data['description']}
+            )
+            request_data["description"] = form_data['description']
         elif request_type == "continue_story":
-            prompt = form_data['prompt']
-
-        else:
-            raise ValueError(f"Invalid request type: {request_type}")
+            request_data.update(
+                {
+                    "prompt": form_data['prompt'],
+                    "chapter_number": form_data['chapter_number']
+                }
+            )
 
         response = make_request(
-            prompt=prompt,
-            api_key=current_user.api_key,
+            socket_path=current_app.config["OPENAI_SOCKET_ADDR"],
+            request_data=request_data
         )
 
         if "error" in response:
@@ -100,6 +110,6 @@ def new():
         success, redirect_url = handle_story_request(
             request_type="new_story",
             form_data={'description': form.description.data,
-                       'api_key': current_user.api_key})
+                       'api_key': current_user.user_key.api_key})
         return redirect(redirect_url)
     return render_template('story/new.html', title='New Story', form=form)

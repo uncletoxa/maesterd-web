@@ -36,7 +36,17 @@ def save_api_key():
         flash('API key cannot be empty!', 'danger')
         return redirect(url_for('user.user_profile', username=current_user.username))
 
-    current_user.api_key = api_key
+    # Check if user already has a UserKey entry
+    user_key = db.session.execute(
+        sa.select(UserKey).where(UserKey.user_id == current_user.user_id)
+    ).scalar_one_or_none()
+
+    if user_key:
+        user_key.api_key = api_key  # Update existing key
+    else:
+        user_key = UserKey(user_id=current_user.user_id, api_key=api_key)
+        db.session.add(user_key)  # Create new entry
+
     db.session.commit()
 
     flash('API Key saved successfully!', 'success')
