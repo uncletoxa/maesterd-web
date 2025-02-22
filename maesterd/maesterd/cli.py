@@ -98,14 +98,15 @@ def run(conf, num_pc):
 
 
 @cli.command()
-@click.option('--socket-path', default='/tmp/sockets/maesterd.sock', help='Unix socket path')
+@click.option('--socket-path', default='/tmp/sockets/maesterd.sock',help='Unix socket path')
+@click.option('--mock-response', is_flag=True, help='Mock response w/o a call to the LLM')
 def serve(socket_path):
     """
     Start the maesterd socket api.
 
     Example:
         poetry run campaign serve
-        poetry run campaign serve --socket-path /custom/path/maesterd.sock
+        poetry run campaign serve --socket-path /custom/path/maesterd.sock --mock-response
     """
     from maesterd.api.server import run_server
     run_server(socket_path)

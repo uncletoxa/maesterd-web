@@ -14,10 +14,12 @@ logger = logging.getLogger(__name__)
 
 
 class MaesterdServer:
-    def __init__(self, socket_path: str, timeout: float = 30.0, buffer_size: int = 8192):
+    def __init__(self, socket_path: str,
+                 timeout: float = 30.0, buffer_size: int = 8192, mock_response: bool = False):
         self.socket_path = socket_path
         self.timeout = timeout
         self.buffer_size = buffer_size
+        self.mock_response = mock_response
         self.sock = None
         self.running = False
         self._setup_logging()
@@ -105,7 +107,14 @@ class MaesterdServer:
                     if request_type == 'health_check':
                         response = self._handle_health_check()
                     else:
-                        response = self._handle_prompt(request)
+                        if self.mock_response:
+                            response = {"content": "content",
+                                         "state": {
+                                             "name": 'name',
+                                             "setting": 'setting',
+                                             "goal": 'goal'}}
+                        else:
+                            response = self._handle_prompt(request)
 
                 client_sock.sendall(json.dumps(response).encode())
 
@@ -158,8 +167,8 @@ class MaesterdServer:
                 pass
 
 
-def run_server(socket_path: str):
-    server = MaesterdServer(socket_path=socket_path)
+def run_server(socket_path: str, *args, **kwargs):
+    server = MaesterdServer(socket_path=socket_path, *args, **kwargs)
 
     try:
         server.serve_forever()
