@@ -1,16 +1,18 @@
-[project]
-name = "maesterd-web"
-version = "0.3.0"
-readme = "README.md"
-requires-python = ">=3.12.8"
-dependencies = [
-    "environs==14.1.0",
-    "flask==3.1.0",
-    "flask-login==0.6.3",
-    "flask-migrate==4.1.0",
-    "flask-moment==1.0.6",
-    "flask-sqlalchemy==3.1.1",
-    "flask-wtf==1.2.2",
-    "openai==1.60.1",
-    "roman==5.0.0",
+[tool.poetry]
+name = "maesterd-app"
+version = "0.1.0"
+description = "Monorepo for maesterd and maesterd_web"
+authors = [
+    "uncletoxa <https://github.com/uncletoxa>",
+    "eskinmi <mustafasamedeskin@gmail.com>"
 ]
+packages = [{include = "maesterd"}, {include = "maesterd_web"}]
+
+[tool.poetry.dependencies]
+python = "3.9.18"
+maesterd = { path = "maesterd", develop = true }
+maesterd_web = { path = "maesterd_web", develop = true }
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
