@@ -20,19 +20,20 @@ def handle_story_request(request_type: str, form_data: dict, story_id=None):
     Returns (success, redirect_url) tuple.
     """
     try:
-        request_data = {"type": request_type,
-                        "thread_id": f"user={current_user.user_id}.thread={story_id or uuid4()}",
-                        "api_key": form_data['api_key']}
 
         if request_type == "new_story":
-            request_data["description"] = form_data['description']
-        elif request_type == "continue_story":
-            request_data.update({
-                "prompt": form_data['prompt'],
-                "chapter_number": form_data['chapter_number']})
+            prompt = form_data['description'],
 
-        response = make_request(socket_path=current_app.config["OPENAI_SOCKET_ADDR"],
-                                request_data=request_data)
+        elif request_type == "continue_story":
+            prompt = form_data['prompt']
+
+        else:
+            raise ValueError(f"Invalid request type: {request_type}")
+
+        response = make_request(
+            prompt=prompt,
+            api_key=current_user.api_key,
+        )
 
         if "error" in response:
             raise SocketRequestError(response["error"])
@@ -73,21 +74,23 @@ def handle_story_request(request_type: str, form_data: dict, story_id=None):
 @blueprint.route('/<uuid:story_id>', methods=['GET', 'POST'])
 @login_required
 def story(story_id):
-    story = db.first_or_404(sa.select(Story).where(Story.story_id==story_id))
-    chapters_query = sa.select(Chapter).where(Chapter.story_id==story.story_id).order_by(Chapter.chapter_number)
+    story = db.first_or_404(sa.select(Story).where(Story.story_id == story_id))
+    chapters_query = sa.select(Chapter).where(Chapter.story_id == story.story_id).order_by(Chapter.chapter_number)
     chapters = db.session.scalars(chapters_query)
     form = ChapterForm()
 
     if form.validate_on_submit():
         success, redirect_url = handle_story_request(
             request_type='continue_story',
-            form_data={'prompt': form.prompt.data,
-                       'api_key': form.api_key.data,
-                       'chapter_number': len(list(chapters)) + 1},
+            form_data={
+                'prompt': form.prompt.data,
+                'api_key': current_user.user_key.api_key,
+                'chapter_number': len(list(chapters)) + 1},
             story_id=story_id)
         return redirect(redirect_url)
 
     return render_template('story/story.html', chapters=chapters, story=story, form=form)
+
 
 @blueprint.route('/new', methods=['GET', 'POST'])
 @login_required
@@ -97,6 +100,6 @@ def new():
         success, redirect_url = handle_story_request(
             request_type="new_story",
             form_data={'description': form.description.data,
-                       'api_key': form.api_key.data})
+                       'api_key': current_user.api_key})
         return redirect(redirect_url)
     return render_template('story/new.html', title='New Story', form=form)

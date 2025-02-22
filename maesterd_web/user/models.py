@@ -18,7 +18,7 @@ class User(UserMixin, db.Model):
         default=lambda: datetime.now(timezone.utc))
 
     stories: so.WriteOnlyMapped['Story'] = so.relationship(back_populates='story_author_id')
-    user_key: so.WriteOnlyMapped['UserKey'] = so.relationship(back_populates='user_key_owner_id')
+    user_key: so.Mapped['UserKey'] = so.relationship(back_populates='user_key_owner_id')
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -42,4 +42,4 @@ class UserKey(db.Model):
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.user_id), index=True)
     api_key = db.Column(db.String(256), nullable=True)  # Store API Key
 
-    user_key_owner_id: so.Mapped['User'] = so.relationship(back_populates='user_key')
+    user_key_owner_id: so.Mapped['User'] = so.relationship(back_populates='api_key')
