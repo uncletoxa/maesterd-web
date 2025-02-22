@@ -100,7 +100,7 @@ def run(conf, num_pc):
 @cli.command()
 @click.option('--socket-path', default='/tmp/sockets/maesterd.sock',help='Unix socket path')
 @click.option('--mock-response', is_flag=True, help='Mock response w/o a call to the LLM')
-def serve(socket_path):
+def serve(socket_path, mock_response):
     """
     Start the maesterd socket api.
 
