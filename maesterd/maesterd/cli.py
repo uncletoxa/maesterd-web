@@ -109,7 +109,7 @@ def serve(socket_path, mock_response):
         poetry run campaign serve --socket-path /custom/path/maesterd.sock --mock-response
     """
     from maesterd.api.server import run_server
-    run_server(socket_path)
+    run_server(socket_path, mock_response=mock_response)
 
 
 if __name__ == "__main__":
