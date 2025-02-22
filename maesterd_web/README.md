@@ -1,3 +1,5 @@
+## How To
+
 ```bash
 touch .flaskenv
 ```
@@ -18,3 +20,12 @@ uv run flask db upgrade
 ```bash
 uv run flask run --debug
 ```
+
+## To Dos
+
+
+- [ ] turn the project into uv (all)
+- [x] expose char creation to new story page  @momo
+- [x] expose setting to new story page  @momo
+- [x] create custom char creation input @momo
+- [ ] add go to story button to new story page
