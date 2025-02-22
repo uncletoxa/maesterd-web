@@ -28,5 +28,5 @@ uv run flask run --debug
 - [x] expose char creation to new story page  @momo
 - [x] expose setting to new story page  @momo
 - [x] create custom char creation input @momo
-- [ ] fix save_api_key method to save to db
+- [X] fix save_api_key method to save to db  @ momo
 - [ ] add go to story button to new story page
