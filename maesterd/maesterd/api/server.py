@@ -54,7 +54,7 @@ class MaesterdServer:
     def _handle_prompt(data: dict[str, Any]) -> dict[str, Any]:
         try:
             prompt = data.get('prompt')
-            if not prompt:
+            if prompt is None:
                 return {"error": "No prompt provided"}
 
             execution_config = {
