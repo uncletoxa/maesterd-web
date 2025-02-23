@@ -42,4 +42,4 @@ class UserKey(db.Model):
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.user_id), index=True)
     api_key = db.Column(db.String(256), nullable=True)  # Store API Key
 
-    user_key_owner_id: so.Mapped['User'] = so.relationship(back_populates='api_key')
+    user_key_owner_id: so.Mapped['User'] = so.relationship(back_populates='user_key')
