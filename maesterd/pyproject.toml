@@ -1,7 +1,7 @@
 [project]
 name = "maesterd"
 version = "0.1.0"
-escription = ""
+description = ""
 authors = ["eskinmi <mustafasamedeskin@gmail.com>"]
 readme = "README.md"
 requires-python = ">=3.9.18"
