@@ -1,7 +1,5 @@
 import logging.config
 import click
-from environs import env
-
 from dataclasses import dataclass
 
 from maesterd.llm.graph import graph
@@ -115,7 +113,4 @@ def serve(socket_path, mock_response):
 
 
 if __name__ == "__main__":
-    env.read_env()
-    OPENAI_SOCKET_ADDR = env.str('OPENAI_API_KEY')
-
     cli()
