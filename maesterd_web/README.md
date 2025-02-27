@@ -1,17 +1,25 @@
 ## How To
 
 ```bash
+git clone git@github.com:uncletoxa/maesterd-web.git && cd maesterd_web
+```
+
+```bash
 touch .flaskenv
 ```
 
-add to `.flaskenv`
-
+add to `.flaskenv`:
 ```markdown
 FLASK_APP=app:create_app
 SQLALCHEMY_DATABASE_URI=sqlite:///maesterd_web.db
 ```
 
 ```bash
+uv venv --python 3.12 && source .venv/bin/activate
+```
+
+```bash
+cd maesterd_web
 uv run flask db init
 uv run flask db migrate
 uv run flask db upgrade
